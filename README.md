@@ -1,3 +1,5 @@
+# Assignment 3
+
 In this program you will be performing an analysis of a set of books to determine how well the distribution of letters in these texts corresponds to that found by other researchers. A chart of letter frequencies in the English language can be found at https://en.wikipedia.org/wiki/Letter_frequency .
 
 Your program should use command line arguments to input the names of several books that should be analyzed. There are ten such books that I got from Project Gutenberg given above. These are all long texts, so that the sample size for the analysis will be reasonable. For each book, you should read in the text and count how many times each letter occurs in the text. You can ignore all numbers and symbols that you find in the text, and upper and lower case letters should be considered the same for the counting process. You should then compute the occurrence percentages for each letter in each book to generate a frequency table like that mentioned above. Use a dictionary to store this information.
