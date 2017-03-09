@@ -19,10 +19,17 @@ def Read_File(file_name) :
 		for line in file : 						# Reads line.
 			for letter in line : 				# Reads character value from line.
 				if not letter.isspace() : 		# Filters white space.
-					letter = letter.lower()
+					letter = letter.lower()		# Sanitization.
+					#if ord(letter)
 					Tally_Value(letter)			# Hit! Process it.
 #--------------------------------------------------------------------------------#
+def Sanitize_Input(value) :
+	return
+#--------------------------------------------------------------------------------#
+# Add increment array slot via ASCII index (left adjusted).
+# Ex. a = 97. array[0] = a's ascii value - 97 constant.
 def Tally_Value(char) :
+	if ord(char) > 160 : print(char)
 	global total_letters
 	total_letters += 1
 #--------------------------------------------------------------------------------#
@@ -37,7 +44,7 @@ def Print_Wiki() :
 def Print_Result() :
 	print("Total number of letters:", total_letters)
 #--------------------------------------------------------------------------------#
-
+# Error handling template.
 def Throw_Fatal(error_text) :
 	print("Error:", error_text)
 	sys.exit(1)
