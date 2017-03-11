@@ -16,8 +16,6 @@ import curses.ascii
 #DECLARATIONS####################################################################
 
 wiki_file = "official.txt" # For easy file swapping.
-total_letters = 0
-occurrences = [0] * 26
 stats = []
 
 #FX###############################################################################
@@ -29,25 +27,27 @@ def Read_Wiki_File() :
 #--------------------------------------------------------------------------------#
 # Iterates through the book, filtering white space, and tallies each ASCII val.
 def Read_Arg_File(file_name) :
+	letters = []
 	with open(file_name) as file :
 		for line in file :
 			for letter in line :
 				if not letter.isspace() : 	# Filters white space.
 					letter = letter.lower()	# Sanitizes for ASCII alpha range.
 					if ord(letter) >= 97 and ord(letter) <= 123 :
-						Tally_Value(letter) # Hit! Process it.
+						letters.append(letter)
+	return letters
 #--------------------------------------------------------------------------------#
 # Add increment array slot via ASCII index (left adjusted).
 # Ex. a = 97. array[0] = a's ascii value - 97 constant.
-def Tally_Value(ch) :
-	global total_letters
-	global occurrences
-	total_letters += 1
-	target = ord(ch) - 97 # Left adjustment: 0/a - 25/z.
-	occurrences[target] += 1
+def Tally_Value(letters) :
+	total_letters = 0
+	occurrences = [0] * 26
+	for i in letters :
+		total_letters += 1
+		occurrences[ord(i) - 97] += 1 # Left adjustment: 0/a - 25/z. Tally up.
+	return total_letters, occurrences
 #--------------------------------------------------------------------------------#
-def Print_Result() :
-	global occurrences
+def Print_Result(total_letters, occurences) :
 	global stats
 	print("Total number of letters:", total_letters)
 	k = 97
@@ -90,5 +90,9 @@ if not os.path.isfile(file) or not file.endswith(".txt"):
 
 # File Processing
 Read_Wiki_File()
-Read_Arg_File(file)
-Print_Result()
+
+letters = []
+occurrences = []
+letters = Read_Arg_File(file)
+total_letters, occurrences = Tally_Value(letters)
+Print_Result(total_letters, occurrences)
