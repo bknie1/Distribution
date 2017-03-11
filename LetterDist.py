@@ -1,6 +1,11 @@
 # Name: 		Assignment 3 : Letter Distribution
 # Description : Counts letter occurrences in argument input text file.
 # Author:		Brandon Knieriem
+# Goals:
+# 	- Import multiple books via args. Read and ignore non-alpha.
+# 	- Generate a report for each book. Store in dictionary.
+# 	- Add the sum of all differences to get a total error.
+# 	- Rank books by total error.
 
 #LIB##############################################################################
 
@@ -25,15 +30,12 @@ def Read_Wiki_File() :
 # Iterates through the book, filtering white space, and tallies each ASCII val.
 def Read_Arg_File(file_name) :
 	with open(file_name) as file :
-		for line in file : 						# Reads line.
-			for letter in line : 				# Reads character value from line.
-				Sanitize_Input(letter)
-#--------------------------------------------------------------------------------#
-def Sanitize_Input(ch) :
-	if not ch.isspace() : 						# Filters white space.
-		ch = ch.lower()							# Sanitizes for range.
-		if ord(ch) >= 97 and ord(ch) <= 123 : 	# Within lower alpha range.
-			Tally_Value(ch)						# Hit! Process it.
+		for line in file :
+			for letter in line :
+				if not letter.isspace() : 	# Filters white space.
+					letter = letter.lower()	# Sanitizes for ASCII alpha range.
+					if ord(letter) >= 97 and ord(letter) <= 123 :
+						Tally_Value(letter) # Hit! Process it.
 #--------------------------------------------------------------------------------#
 # Add increment array slot via ASCII index (left adjusted).
 # Ex. a = 97. array[0] = a's ascii value - 97 constant.
