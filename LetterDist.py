@@ -25,6 +25,14 @@ def Read_Wiki_File() :
 		for line in file :
 			stats.append(line.rstrip())
 #--------------------------------------------------------------------------------#
+def Process_Book(file) :
+	letters = []
+	occurrences = []
+	print("\nText Name:", file, end='\n\n')
+	letters = Read_Arg_File(file)
+	total_letters, occurrences = Tally_Value(letters)
+	Print_Result(total_letters, occurrences)
+#--------------------------------------------------------------------------------#
 # Iterates through the book, filtering white space, and tallies each ASCII val.
 def Read_Arg_File(file_name) :
 	letters = []
@@ -33,7 +41,7 @@ def Read_Arg_File(file_name) :
 			for letter in line :
 				if not letter.isspace() : 	# Filters white space.
 					letter = letter.lower()	# Sanitizes for ASCII alpha range.
-					if ord(letter) >= 97 and ord(letter) <= 123 :
+					if ord(letter) >= 97 and ord(letter) <= 122 :
 						letters.append(letter)
 	return letters
 #--------------------------------------------------------------------------------#
@@ -44,12 +52,16 @@ def Tally_Value(letters) :
 	occurrences = [0] * 26
 	for i in letters :
 		total_letters += 1
-		occurrences[ord(i) - 97] += 1 # Left adjustment: 0/a - 25/z. Tally up.
+		try :
+			occurrences[ord(i) - 97] += 1 # Left adjustment: 0/a - 25/z. Tally up.
+		except :
+			error = "Value:", i, "ASCII:", ord(i)
+			Throw_Fatal(error)
 	return total_letters, occurrences
 #--------------------------------------------------------------------------------#
-def Print_Result(total_letters, occurences) :
+def Print_Result(total_letters, occurrences) :
 	global stats
-	print("Total number of letters:", total_letters)
+	total_error = 0
 	k = 97
 	p = 1
 	mod = 1 # Adjust for column formatting.
@@ -57,15 +69,19 @@ def Print_Result(total_letters, occurences) :
 		letter = chr(k)
 		text_avg = round((i/total_letters * 100), 2)
 		global_avg = float(stats[k - 97])
-		difference = text_avg - global_avg
+		deviation = text_avg - global_avg
+		total_error += deviation
 		print(letter, sep='', end=' = ')
 		print("%10d" % i, sep='', end='\t')
 		print("Average - Text: %4.3f" % text_avg, sep='', end='%\t')
 		print("Global: %4.3f" % global_avg, sep='', end='%\t')
-		print("Difference: %4.3f" % difference, sep='', end='%')
+		print("Deviation: %4.3f" % deviation, sep='', end='%')
 		if not (p) % mod: print('\n')
 		p += 1
 		k += 1
+	print("Total Letters:", total_letters, end='\t\t\t\t')
+	print("Total Deviation: %.3f" % total_error, end='%\n')
+	print("\n-------------------------------------------------------------------------")
 #--------------------------------------------------------------------------------#
 def Print_Wiki() :
 	print("Wiki Letter Frequency:")
@@ -80,19 +96,13 @@ def Throw_Fatal(error_text) :
 	sys.exit(1)
 
 #MAIN#############################################################################
+try :
+	Read_Wiki_File()
+except :
+	Throw_Fatal("Official statistics file missing.")
 
-# Argument Filtering
-arg_num = len(sys.argv)
-if arg_num != 2 : Throw_Fatal("Invalid arguments.")
-file = sys.argv[1]
-if not os.path.isfile(file) or not file.endswith(".txt"):
-	Throw_Fatal("Invalid file.")
-
-# File Processing
-Read_Wiki_File()
-
-letters = []
-occurrences = []
-letters = Read_Arg_File(file)
-total_letters, occurrences = Tally_Value(letters)
-Print_Result(total_letters, occurrences)
+# Argument Reading and *.txt File Filtering
+for arg in sys.argv :
+	if os.path.isfile(arg) and arg.endswith(".txt") :
+		try : Process_Book(arg)
+		except : Throw_Fatal("Argument file.")
