@@ -17,6 +17,8 @@ import curses.ascii
 
 wiki_file = "official.txt" # For easy file swapping.
 stats = []
+books = {}
+total_error = 0
 
 #FX###############################################################################
 def Read_Wiki_File() :
@@ -26,12 +28,23 @@ def Read_Wiki_File() :
 			stats.append(line.rstrip())
 #--------------------------------------------------------------------------------#
 def Process_Book(file) :
+	global books # Dictionary for each book dictionary by name.
+	book = {} # Dictionary containing letters, occurrences.
 	letters = []
 	occurrences = []
 	print("\nText Name:", file, end='\n\n')
 	letters = Read_Arg_File(file)
+
 	total_letters, occurrences = Tally_Value(letters)
-	Print_Result(total_letters, occurrences)
+	book['Letters'] = total_letters
+	book['Occurrences'] = occurrences
+	print(file)
+	books[file] = book # Add new entry
+
+	#Print_Dictionary(book)
+	#Print_Dictionary(books)
+
+	Print_Book_Result(total_letters, occurrences)
 #--------------------------------------------------------------------------------#
 # Iterates through the book, filtering white space, and tallies each ASCII val.
 def Read_Arg_File(file_name) :
@@ -59,9 +72,10 @@ def Tally_Value(letters) :
 			Throw_Fatal(error)
 	return total_letters, occurrences
 #--------------------------------------------------------------------------------#
-def Print_Result(total_letters, occurrences) :
+def Print_Book_Result(total_letters, occurrences) :
+	global total_error
 	global stats
-	total_error = 0
+	book_error = 0
 	k = 97
 	p = 1
 	mod = 1 # Adjust for column formatting.
@@ -70,7 +84,7 @@ def Print_Result(total_letters, occurrences) :
 		text_avg = round((i/total_letters * 100), 2)
 		global_avg = float(stats[k - 97])
 		deviation = text_avg - global_avg
-		total_error += deviation
+		book_error += deviation
 		print(letter, sep='', end=' = ')
 		print("%10d" % i, sep='', end='\t')
 		print("Average - Text: %4.3f" % text_avg, sep='', end='%\t')
@@ -79,16 +93,24 @@ def Print_Result(total_letters, occurrences) :
 		if not (p) % mod: print('\n')
 		p += 1
 		k += 1
-	print("Total Letters:", total_letters, end='\t\t\t\t')
-	print("Total Deviation: %.3f" % total_error, end='%\n')
+	print("Book Letter Count:", total_letters, end='\n')
+	print("Book Deviation: %.3f" % book_error, end='%\n')
 	print("\n-------------------------------------------------------------------------")
+	total_error += book_error
 #--------------------------------------------------------------------------------#
-def Print_Wiki() :
-	print("Wiki Letter Frequency:")
-	i = 97
-	while i < 123 :
-		print(chr(i), "=")
-		i += 1
+def Print_Book_Results(text_avg, global_avg) :
+	return
+
+#--------------------------------------------------------------------------------#
+def Print_Dictionary(dictionary) :
+	#print(dictionary.keys())
+	#print(dictionary.values())
+	print(dictionary.items())
+#--------------------------------------------------------------------------------#
+def Print_Total_Result() :
+	global total_error
+	print("Total Deviation: %.3f" % total_error, end='%\n')
+	print("-------------------------------------------------------------------------")
 #--------------------------------------------------------------------------------#
 # Error handling.
 def Throw_Fatal(error_text) :
@@ -106,3 +128,4 @@ for arg in sys.argv :
 	if os.path.isfile(arg) and arg.endswith(".txt") :
 		try : Process_Book(arg)
 		except : Throw_Fatal("Argument file.")
+Print_Total_Result()
