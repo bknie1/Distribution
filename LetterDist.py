@@ -36,10 +36,10 @@ def Read_Wiki_File() :
 			stats.append(line.rstrip())
 
 	# Dictionary of Wiki Stats
+	wiki['Source'] = wiki_file
 	for i in stats :
 		wiki[chr(c)] = i
 		c += 1
-	Print_Dictionary(wiki)
 #--------------------------------------------------------------------------------#
 def Process_Book(file) :
 	global book_shelf # Dictionary for each book dictionary by name.
@@ -87,7 +87,6 @@ def Tally_Value(letters, book) :
 		book[chr(c)] = i
 		c += 1
 	#book['Occurrences'] = occurrences
-	Print_Dictionary(book)
 	return book
 #--------------------------------------------------------------------------------#
 def Calculate_Book(book) :
@@ -101,7 +100,8 @@ def Calculate_Book(book) :
 		text_avg = round((book.get(chr(k))/total_letters * 100), 2)
 		global_avg = float(wiki.get(chr(k)))
 		deviation = text_avg - global_avg
-		book[chr(k) + 'D'] = round(deviation, 3)
+		book['x' + chr(k)] = text_avg
+		book['σ' + chr(k)] = round(deviation, 3)
 		book_error += deviation
 
 		# print(letter, sep='', end=' = ')
@@ -112,21 +112,38 @@ def Calculate_Book(book) :
 
 		k += 1
 		i += 1
+
 	book['Book Deviation'] = round(book_error, 3)
 	total_error += book_error
-	Print_Dictionary(book)
+	Print_Book(book)
 	return book_error
 #--------------------------------------------------------------------------------#
-def Print_Dictionary(dictionary) :
-	#print(dictionary.keys())
-	#print(dictionary.values())
-	#print(dictionary.items())
-	for k, v in dictionary.items():
-		print (k, ':', v)
-		print("-------------------------------------------------------------------------")
+def Print_Book(book) :
+	global wiki
+	print("Source:", book.get('Source'))
+	k = 0
+	while k < 26 :
+		letter = chr(k + 97)
+		count = book.get(letter)
+		text_avg = book.get('x' + chr(k + 97))
+		global_avg = float(wiki.get(chr(k + 97)))
+		deviation = book.get('σ' + letter)
+
+		print(letter, sep='', end=' = ')
+		print("%10d" % count, sep='', end='\t')
+		print("M-Text: %4.3f" % text_avg, sep='', end='%\t')
+		print("M-Global: %4.3f" % global_avg, sep='', end='%\t')
+		print("Deviation: %4.3f" % deviation, sep='', end='%\n')
+
+
+		#book_p = dictionary.get(chr(k)) / dictionary.get('Total' * 100, 2)
+		#official_p = wiki.get(chr(k + 97))
+		#print(dictionary.get(chr(k + 97)))
+		k += 1
 #--------------------------------------------------------------------------------#
 def Print_Total_Result() :
 	global total_error
+	print("-------------------------------------------------------------------------")
 	print("Total Deviation in all Text: %.3f" % total_error, end='%\n')
 	print("-------------------------------------------------------------------------")
 #--------------------------------------------------------------------------------#
@@ -137,10 +154,10 @@ def Throw_Fatal(error_text) :
 
 #MAIN#############################################################################
 book_shelf = {}
-try :
-	Read_Wiki_File()
-except :
-	Throw_Fatal("Official statistics file missing.")
+#try :
+Read_Wiki_File()
+#except :
+	#Throw_Fatal("Official statistics file missing.")
 
 # Argument Reading and *.txt File Filtering
 for arg in sys.argv :
