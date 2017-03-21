@@ -28,11 +28,14 @@ total_error = 0
 def Read_Wiki_File() :
 	global stats
 	global wiki
+	c = 97
+
+	# Global Stats for Comparison
 	with open(wiki_file) as file :
 		for line in file :
 			stats.append(line.rstrip())
 
-	c = 97
+	# Dictionary of Wiki Stats
 	for i in stats :
 		wiki[chr(c)] = i
 		c += 1
@@ -43,14 +46,11 @@ def Process_Book(file) :
 	book = {} # Dictionary containing letters, occurrences.
 	letters = []
 	occurrences = []
-	print("\nText Name:", file, end='\n\n')
+	book['Source'] = file
 	letters = Read_Arg_File(file)
-
-	total_letters, occurrences = Tally_Value(letters)
-	book['Letters'] = total_letters
-	book['Occurrences'] = occurrences
-	book_error = Calculate_Book(total_letters, occurrences)
-	book['Error'] = book_error
+	book = Tally_Value(letters, book)
+	book_error = Calculate_Book(book)
+	#book['Error'] = book_error
 
 	#Print_Dictionary(book)
 	#Print_Dictionary(book_shelf)
@@ -71,8 +71,7 @@ def Read_Arg_File(file_name) :
 #--------------------------------------------------------------------------------#
 # Add increment array slot via ASCII index (left adjusted).
 # Ex. a = 97. array[0] = a's ascii value - 97 constant.
-def Tally_Value(letters) :
-	dict_letter = {}
+def Tally_Value(letters, book) :
 	total_letters = 0
 	occurrences = [0] * 26
 	for i in letters :
@@ -82,18 +81,27 @@ def Tally_Value(letters) :
 		except :
 			error = "Value:", i, "ASCII:", ord(i)
 			Throw_Fatal(error)
-	return total_letters, occurrences
+	book['Letters'] = total_letters
+	c = 97
+	for i in occurrences :
+		book[chr(c)] = i
+		c += 1
+	#book['Occurrences'] = occurrences
+	Print_Dictionary(book)
+	return book
 #--------------------------------------------------------------------------------#
-def Calculate_Book(total_letters, occurrences) :
+def Calculate_Book(book) :
+	total_letters = book.get('Letters')
 	global total_error
-	global stats
+	global wiki # A - Z
 	book_error = 0
 	k = 97
-	for i in occurrences :
-		letter = chr(k)
-		text_avg = round((i/total_letters * 100), 2)
-		global_avg = float(stats[k - 97])
+	i = 0
+	while i < 26 :
+		text_avg = round((book.get(chr(k))/total_letters * 100), 2)
+		global_avg = float(wiki.get(chr(k)))
 		deviation = text_avg - global_avg
+		book[chr(k) + 'D'] = round(deviation, 3)
 		book_error += deviation
 
 		# print(letter, sep='', end=' = ')
@@ -103,10 +111,10 @@ def Calculate_Book(total_letters, occurrences) :
 		# print("Deviation: %4.3f" % deviation, sep='', end='%\n')
 
 		k += 1
-	print("Book Letter Count:", total_letters, end='\n')
-	print("Book Deviation: %.3f" % book_error, end='%\n')
-	print("\n-------------------------------------------------------------------------")
+		i += 1
+	book['Book Deviation'] = round(book_error, 3)
 	total_error += book_error
+	Print_Dictionary(book)
 	return book_error
 #--------------------------------------------------------------------------------#
 def Print_Dictionary(dictionary) :
@@ -119,7 +127,7 @@ def Print_Dictionary(dictionary) :
 #--------------------------------------------------------------------------------#
 def Print_Total_Result() :
 	global total_error
-	print("Total Deviation: %.3f" % total_error, end='%\n')
+	print("Total Deviation in all Text: %.3f" % total_error, end='%\n')
 	print("-------------------------------------------------------------------------")
 #--------------------------------------------------------------------------------#
 # Error handling.
@@ -137,7 +145,7 @@ except :
 # Argument Reading and *.txt File Filtering
 for arg in sys.argv :
 	if os.path.isfile(arg) and arg.endswith(".txt") :
-		try : Process_Book(arg)
-		except : Throw_Fatal("Argument file.")
+		Process_Book(arg)
+		#except : Throw_Fatal("Argument file.")
 Print_Total_Result()
 #Print_Dictionary(book_shelf)
