@@ -21,22 +21,15 @@ import curses.ascii
 wiki_file = "official.txt" # For easy file swapping.
 wiki = {}
 stats = []
-book_shelf = []
+book_shelf = {}
 total_error = 0
 
 #FX###############################################################################
 def Read_Wiki_File() :
 	global stats
-	global wiki
 	with open(wiki_file) as file :
 		for line in file :
 			stats.append(line.rstrip())
-
-	c = 97
-	for i in stats :
-		wiki[chr(c)] = i
-		c += 1
-	Print_Dictionary(wiki)
 #--------------------------------------------------------------------------------#
 def Process_Book(file) :
 	global book_shelf # Dictionary for each book dictionary by name.
@@ -96,11 +89,11 @@ def Calculate_Book(total_letters, occurrences) :
 		deviation = text_avg - global_avg
 		book_error += deviation
 
-		# print(letter, sep='', end=' = ')
-		# print("%10d" % i, sep='', end='\t')
-		# print("Average - Text: %4.3f" % text_avg, sep='', end='%\t')
-		# print("Global: %4.3f" % global_avg, sep='', end='%\t')
-		# print("Deviation: %4.3f" % deviation, sep='', end='%\n')
+		print(letter, sep='', end=' = ')
+		print("%10d" % i, sep='', end='\t')
+		print("Average - Text: %4.3f" % text_avg, sep='', end='%\t')
+		print("Global: %4.3f" % global_avg, sep='', end='%\t')
+		print("Deviation: %4.3f" % deviation, sep='', end='%\n')
 
 		k += 1
 	print("Book Letter Count:", total_letters, end='\n')
@@ -140,4 +133,4 @@ for arg in sys.argv :
 		try : Process_Book(arg)
 		except : Throw_Fatal("Argument file.")
 Print_Total_Result()
-#Print_Dictionary(book_shelf)
+Print_Dictionary(book_shelf)
