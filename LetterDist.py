@@ -138,7 +138,7 @@ def Sort_Book(book) :
 def Print_Sorted(book, sorted_letters) :
 	print("\nSorted by Frequency:\n")
 	for i in sorted_letters :
-		print(i[0])
+		print(i[0], " - ", i[1])
 	print("\n")
 #--------------------------------------------------------------------------------#
 def Print_Book(book) :
