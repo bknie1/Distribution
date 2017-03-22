@@ -17,27 +17,35 @@ import os
 
 #DECLARATIONS####################################################################
 
-wiki_file = "official.txt" # For easy file swapping.
+wiki_percent = "percent.txt" # For easy file swapping.
+wiki_frequency = "frequency.txt" # Same.
 wiki = {}
 book_shelf = []
 total_error = 0
 
 #FX###############################################################################
-def Read_Wiki_File() :
-	stats = []
+def Read_Wiki_Files() :
+	percents = []
+	frequency = []
 	global wiki
 	c = 97
 
 	# Global Stats for Comparison
-	with open(wiki_file) as file :
+	with open(wiki_percent) as file :
 		for line in file :
-			stats.append(line.rstrip())
+			percents.append(line.rstrip())
+
+	with open(wiki_frequency) as file :
+		for line in file :
+			frequency.append(line.rstrip())
 
 	# Dictionary of Wiki Stats
-	wiki['Source'] = wiki_file
-	for i in stats :
+	wiki['Source'] = wiki_percent
+	for i in percents :
 		wiki[chr(c)] = i
 		c += 1
+
+	wiki['Frequency'] = frequency
 #--------------------------------------------------------------------------------#
 def Process_Book(file) :
 	global book_shelf # Dictionary for each book dictionary by name.
@@ -129,6 +137,9 @@ def Sort_Book(book) :
 
 	book['Frequency'] = sorted_letters
 #--------------------------------------------------------------------------------#
+def Get_Frequent() :
+	global book_shelf
+#--------------------------------------------------------------------------------#
 # Strictly for printing the sorted frequency list.
 def Print_Sorted(sorted_letters) :
 	print("\nSorted by Frequency:\n")
@@ -156,16 +167,21 @@ def Print_Book(book) :
 		print("Deviation: %4.3f" % deviation, sep='', end='%\n')
 		k += 1
 
-	print("\nLetter Frequency (Descending)")
+	print("\nBook Letter Frequency (Descending)")
+	k = 1
 	for i in book.get('Frequency') :
-		print(i)
-	print("\n")
+		print(k, "\t", i)
+		k += 1
+	k = 1
+	print("\nOfficial Letter Frequency (Descending)")
+	for i in wiki.get('Frequency') :
+		print(k, "\t", i)
+		k += 1
 #--------------------------------------------------------------------------------#
 def Print_Shelf() :
 	global book_shelf
 	for book in book_shelf :
-		for i in book :
-			print(i)
+		Print_Book(book)
 #--------------------------------------------------------------------------------#
 # Calculates the total amount of error based on book arguments.
 def Print_Total_Result() :
@@ -180,7 +196,7 @@ def Throw_Fatal(error_text) :
 	sys.exit(1)
 
 #MAIN#############################################################################
-try : Read_Wiki_File()
+try : Read_Wiki_Files()
 except : Throw_Fatal("Official statistics file missing.")
 
 # Argument Reading and *.txt File Filtering
