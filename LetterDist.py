@@ -19,13 +19,12 @@ import os
 
 wiki_file = "official.txt" # For easy file swapping.
 wiki = {}
-stats = []
-book_shelf = []
+book_shelf = {}
 total_error = 0
 
 #FX###############################################################################
 def Read_Wiki_File() :
-	global stats
+	stats = []
 	global wiki
 	c = 97
 
@@ -49,11 +48,8 @@ def Process_Book(file) :
 	letters = Read_Arg_File(file)
 	book = Tally_Value(letters, book)
 	book_error = Calculate_Book(book)
-	#book['Error'] = book_error
 
-	#Print_Dictionary(book)
-	#Print_Dictionary(book_shelf)
-
+	Print_Book(book)
 	book_shelf[file] = book # Add new entry
 #--------------------------------------------------------------------------------#
 # Iterates through the book, filtering white space, and tallies each ASCII val.
@@ -109,7 +105,6 @@ def Calculate_Book(book) :
 
 	book['Book Deviation'] = round(book_error, 3)
 	total_error += book_error
-	Print_Book(book)
 	Sort_Book(book)
 	return book_error
 #--------------------------------------------------------------------------------#
@@ -117,6 +112,7 @@ def Calculate_Book(book) :
 def Sort_Book(book) :
 	sorted_book = {} # Temporary, small dictionary for sorting.
 	sorted_letters = []
+
 	i = 0
 	while i < 26 :
 		char = chr(i + 97)
@@ -130,7 +126,8 @@ def Sort_Book(book) :
 	letters = [(key, value) for value, key in letters]
 	for i in letters :
 		sorted_letters.append(i[0])
-	Print_Sorted(sorted_letters)
+
+	book['Frequency'] = sorted_letters
 #--------------------------------------------------------------------------------#
 # Strictly for printing the sorted frequency list.
 def Print_Sorted(sorted_letters) :
@@ -150,14 +147,24 @@ def Print_Book(book) :
 		text_avg = book.get('x' + chr(k + 97))
 		global_avg = float(wiki.get(chr(k + 97)))
 		deviation = book.get('σ' + letter)
+		frequency_list = book.get('Frequency')
 
 		print(letter, sep='', end=' = ')
 		print("%10d" % count, sep='', end='\t')
 		print("M-Text: %4.3f" % text_avg, sep='', end='%\t')
 		print("M-Global: %4.3f" % global_avg, sep='', end='%\t')
 		print("Deviation: %4.3f" % deviation, sep='', end='%\n')
-
 		k += 1
+
+	print("\nLetter Frequency (Descending)")
+	for i in book.get('Frequency') :
+		print(i)
+	print("\n")
+#--------------------------------------------------------------------------------#
+def Print_Shelf() :
+	global book_shelf
+	for book in book_shelf :
+		print(book)
 #--------------------------------------------------------------------------------#
 # Calculates the total amount of error based on book arguments.
 def Print_Total_Result() :
@@ -172,11 +179,8 @@ def Throw_Fatal(error_text) :
 	sys.exit(1)
 
 #MAIN#############################################################################
-book_shelf = {}
-#try :
-Read_Wiki_File()
-#except :
-	#Throw_Fatal("Official statistics file missing.")
+try : Read_Wiki_File()
+except : Throw_Fatal("Official statistics file missing.")
 
 # Argument Reading and *.txt File Filtering
 for arg in sys.argv :
@@ -184,4 +188,4 @@ for arg in sys.argv :
 		Process_Book(arg)
 		#except : Throw_Fatal("Argument file.")
 Print_Total_Result()
-#Print_Dictionary(book_shelf)
+Print_Shelf()
