@@ -14,7 +14,6 @@
 
 import sys
 import os
-import curses.ascii
 
 #DECLARATIONS####################################################################
 
@@ -86,9 +85,10 @@ def Tally_Value(letters, book) :
 	for i in occurrences :
 		book[chr(c)] = i
 		c += 1
-	#book['Occurrences'] = occurrences
+
 	return book
 #--------------------------------------------------------------------------------#
+# Calculates averages, deviation, and the margin of error.
 def Calculate_Book(book) :
 	total_letters = book.get('Letters')
 	global total_error
@@ -104,12 +104,6 @@ def Calculate_Book(book) :
 		book['σ' + chr(k)] = round(deviation, 3)
 		book_error += deviation
 
-		# print(letter, sep='', end=' = ')
-		# print("%10d" % i, sep='', end='\t')
-		# print("Average - Text: %4.3f" % text_avg, sep='', end='%\t')
-		# print("Global: %4.3f" % global_avg, sep='', end='%\t')
-		# print("Deviation: %4.3f" % deviation, sep='', end='%\n')
-
 		k += 1
 		i += 1
 
@@ -119,6 +113,7 @@ def Calculate_Book(book) :
 	Sort_Book(book)
 	return book_error
 #--------------------------------------------------------------------------------#
+# Sorts the occurrences of each letter by frequency.
 def Sort_Book(book) :
 	sorted_book = {} # Temporary, small dictionary for sorting.
 	sorted_letters = []
@@ -137,12 +132,14 @@ def Sort_Book(book) :
 		sorted_letters.append(i[0])
 	Print_Sorted(sorted_letters)
 #--------------------------------------------------------------------------------#
+# Strictly for printing the sorted frequency list.
 def Print_Sorted(sorted_letters) :
 	print("\nSorted by Frequency:\n")
 	for i in sorted_letters :
 		print(i)
 	print("\n")
 #--------------------------------------------------------------------------------#
+# Prints the dictionary for a given book. Name, Letter count, Occurrences, Deviation.
 def Print_Book(book) :
 	global wiki
 	print("Source:", book.get('Source'))
@@ -160,11 +157,9 @@ def Print_Book(book) :
 		print("M-Global: %4.3f" % global_avg, sep='', end='%\t')
 		print("Deviation: %4.3f" % deviation, sep='', end='%\n')
 
-		#book_p = dictionary.get(chr(k)) / dictionary.get('Total' * 100, 2)
-		#official_p = wiki.get(chr(k + 97))
-		#print(dictionary.get(chr(k + 97)))
 		k += 1
 #--------------------------------------------------------------------------------#
+# Calculates the total amount of error based on book arguments.
 def Print_Total_Result() :
 	global total_error
 	print("-------------------------------------------------------------------------")
