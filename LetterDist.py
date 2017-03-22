@@ -137,8 +137,20 @@ def Sort_Book(book) :
 
 	book['Frequency'] = sorted_letters
 #--------------------------------------------------------------------------------#
-def Get_Frequent() :
-	global book_shelf
+# def Compare_Frequencies() :
+# 	global book_shelf
+# 	frequencies = {}
+# 	one_six = set
+# 	seven_twelve = set
+# 	thirt_ninet = set
+# 	twen_twensix = set
+
+# 	for book in book_shelf :
+# 		frequency = book.get('Frequency')
+# 		one_six += frequency[0:6]
+# 		#seven_twelve.union(frequency[6:11])
+# 		#thirt_ninet.union(frequency[12:18])
+# 		#twen_twensix.union(frequency[19:25])
 #--------------------------------------------------------------------------------#
 # Strictly for printing the sorted frequency list.
 def Print_Sorted(sorted_letters) :
@@ -204,5 +216,6 @@ for arg in sys.argv :
 	if os.path.isfile(arg) and arg.endswith(".txt") :
 		Process_Book(arg)
 		#except : Throw_Fatal("Argument file.")
-Print_Total_Result()
 Print_Shelf()
+#Compare_Frequencies()
+Print_Total_Result()
