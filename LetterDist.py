@@ -49,7 +49,7 @@ def Process_Book(file) :
 	book = Tally_Value(letters, book)
 	book_error = Calculate_Book(book)
 
-	Print_Book(book)
+	#Print_Book(book)
 	book_shelf.append(book) # Add new entry
 #--------------------------------------------------------------------------------#
 # Iterates through the book, filtering white space, and tallies each ASCII val.
@@ -164,7 +164,8 @@ def Print_Book(book) :
 def Print_Shelf() :
 	global book_shelf
 	for book in book_shelf :
-		print(book)
+		for i in book :
+			print(i)
 #--------------------------------------------------------------------------------#
 # Calculates the total amount of error based on book arguments.
 def Print_Total_Result() :
