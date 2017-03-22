@@ -116,7 +116,30 @@ def Calculate_Book(book) :
 	book['Book Deviation'] = round(book_error, 3)
 	total_error += book_error
 	Print_Book(book)
+	Sort_Book(book)
 	return book_error
+#--------------------------------------------------------------------------------#
+def Sort_Book(book) :
+	sorted_book = {} # Temporary, small dictionary for sorting.
+	# dictionary sorted by value
+	i = 0
+	while i < 26 :
+		char = chr(i + 97)
+		count = book.get(chr(i + 97))
+		sorted_book[char] = count
+		i += 1
+
+	letters = [(value, key) for key, value in sorted_book.items()]
+	letters.sort()
+	letters.reverse()
+	letters = [(key, value) for value, key in letters]
+	Print_Sorted(book, letters)
+#--------------------------------------------------------------------------------#
+def Print_Sorted(book, sorted_letters) :
+	print("\nSorted by Frequency:\n")
+	for i in sorted_letters :
+		print(i[0])
+	print("\n")
 #--------------------------------------------------------------------------------#
 def Print_Book(book) :
 	global wiki
@@ -134,7 +157,6 @@ def Print_Book(book) :
 		print("M-Text: %4.3f" % text_avg, sep='', end='%\t')
 		print("M-Global: %4.3f" % global_avg, sep='', end='%\t')
 		print("Deviation: %4.3f" % deviation, sep='', end='%\n')
-
 
 		#book_p = dictionary.get(chr(k)) / dictionary.get('Total' * 100, 2)
 		#official_p = wiki.get(chr(k + 97))
