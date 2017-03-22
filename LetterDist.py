@@ -121,7 +121,7 @@ def Calculate_Book(book) :
 #--------------------------------------------------------------------------------#
 def Sort_Book(book) :
 	sorted_book = {} # Temporary, small dictionary for sorting.
-	# dictionary sorted by value
+	sorted_letters = []
 	i = 0
 	while i < 26 :
 		char = chr(i + 97)
@@ -133,12 +133,14 @@ def Sort_Book(book) :
 	letters.sort()
 	letters.reverse()
 	letters = [(key, value) for value, key in letters]
-	Print_Sorted(book, letters)
+	for i in letters :
+		sorted_letters.append(i[0])
+	Print_Sorted(sorted_letters)
 #--------------------------------------------------------------------------------#
-def Print_Sorted(book, sorted_letters) :
+def Print_Sorted(sorted_letters) :
 	print("\nSorted by Frequency:\n")
 	for i in sorted_letters :
-		print(i[0], " - ", i[1])
+		print(i)
 	print("\n")
 #--------------------------------------------------------------------------------#
 def Print_Book(book) :
