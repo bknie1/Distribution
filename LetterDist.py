@@ -19,7 +19,7 @@ import os
 
 wiki_file = "official.txt" # For easy file swapping.
 wiki = {}
-book_shelf = {}
+book_shelf = []
 total_error = 0
 
 #FX###############################################################################
@@ -50,7 +50,7 @@ def Process_Book(file) :
 	book_error = Calculate_Book(book)
 
 	Print_Book(book)
-	book_shelf[file] = book # Add new entry
+	book_shelf.append(book) # Add new entry
 #--------------------------------------------------------------------------------#
 # Iterates through the book, filtering white space, and tallies each ASCII val.
 def Read_Arg_File(file_name) :
